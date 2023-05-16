@@ -1,0 +1,182 @@
+version: "3.7"
+
+x-shared-config8: &sharedconfig8
+  healthcheck:
+    test: ["CMD", "curl", "-kf", "https://elastic:${ELASTIC_PASSWORD}@localhost:9200"]
+    interval: 2s
+    timeout: 10s
+    retries: 50
+  ulimits:
+    memlock:
+      soft: -1
+      hard: -1
+
+x-shared-config7: &sharedconfig7
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:9200"]
+    interval: 2s
+    timeout: 10s
+    retries: 50
+  ulimits:
+    memlock:
+      soft: -1
+      hard: -1
+
+x-shared-env: &sharedenv
+  ES_JAVA_OPTS: -Xms512m -Xmx512m
+  bootstrap.memory_lock: "true"
+
+services:
+    # elasticsearch 8 ssl setup
+  es-8-setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_8_VERSION}
+    volumes:
+      - es-8-certs:/usr/share/elasticsearch/config/certs
+    user: "0"
+    command: >
+      bash -c '
+        if [ ! -f config/certs/ca.zip ]; then
+          echo "Creating CA";
+          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+          unzip config/certs/ca.zip -d config/certs;
+        fi;
+        if [ ! -f config/certs/certs.zip ]; then
+          echo "Creating certs";
+          echo -ne \
+          "instances:\n"\
+          "  - name: es-8-node-1\n"\
+          "    dns:\n"\
+          "      - es-8-node-1\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: es-8-node-2\n"\
+          "    dns:\n"\
+          "      - es-8-node-2\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          > config/certs/instances.yml;
+          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+          unzip config/certs/certs.zip -d config/certs;
+        fi;
+        echo "Setting file permissions"
+        chown -R root:root config/certs;
+        find . -type d -exec chmod 750 \{\} \;;
+        find . -type f -exec chmod 640 \{\} \;;
+        echo "All done!";
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/es-8-node-1/es-8-node-1.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
+  # elasticsearch 8.x
+  es-8-node-1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_8_VERSION}
+    container_name: es-8-node-1
+    environment:
+      cluster.name: es-8
+      node.name: es-8-node-1
+      discovery.seed_hosts: es-8-node-2
+      cluster.initial_master_nodes: es-8-node-1,es-8-node-2
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      xpack.security.enabled: true
+      xpack.security.http.ssl.enabled: true
+      xpack.security.http.ssl.key: certs/es-8-node-1/es-8-node-1.key
+      xpack.security.http.ssl.certificate: certs/es-8-node-1/es-8-node-1.crt
+      xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.transport.ssl.enabled: true
+      xpack.security.transport.ssl.key: certs/es-8-node-1/es-8-node-1.key
+      xpack.security.transport.ssl.certificate: certs/es-8-node-1/es-8-node-1.crt
+      xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.transport.ssl.verification_mode: certificate
+      xpack.license.self_generated.type: basic
+      <<: *sharedenv
+    volumes:
+      - es-8-node-1-data:/usr/share/elasticsearch/data
+      - es-8-certs:/usr/share/elasticsearch/config/certs
+    ports:
+      - 9508:9200
+    networks:
+      - es-8
+    <<: *sharedconfig8
+  es-8-node-2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_8_VERSION}
+    container_name: es-8-node-2
+    depends_on:
+      - es-8-node-1
+    environment:
+      cluster.name: es-8
+      node.name: es-8-node-2
+      discovery.seed_hosts: es-8-node-1
+      cluster.initial_master_nodes: es-8-node-1,es-8-node-2
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      xpack.security.enabled: true
+      xpack.security.http.ssl.enabled: true
+      xpack.security.http.ssl.key: certs/es-8-node-2/es-8-node-2.key
+      xpack.security.http.ssl.certificate: certs/es-8-node-2/es-8-node-2.crt
+      xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.transport.ssl.enabled: true
+      xpack.security.transport.ssl.key: certs/es-8-node-2/es-8-node-2.key
+      xpack.security.transport.ssl.certificate: certs/es-8-node-2/es-8-node-2.crt
+      xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.transport.ssl.verification_mode: certificate
+      xpack.license.self_generated.type: basic      
+      <<: *sharedenv
+    volumes:
+      - es-8-node-2-data:/usr/share/elasticsearch/data
+      - es-8-certs:/usr/share/elasticsearch/config/certs
+    networks:
+      - es-8
+    <<: *sharedconfig8
+
+  # elasticsearch 7.x
+  es-7-node-1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_7_VERSION}
+    container_name: es-7-node-1
+    environment:
+      cluster.name: es-7
+      node.name: es-7-node-1
+      discovery.seed_hosts: es-7-node-2
+      cluster.initial_master_nodes: es-7-node-1,es-7-node-2
+      xpack.security.enabled: "false"
+      <<: *sharedenv
+    volumes:
+      - es-7-node-1-data:/usr/share/elasticsearch/data
+    ports:
+      - 9507:9200
+    networks:
+      - es-7
+    <<: *sharedconfig7
+  es-7-node-2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_7_VERSION}
+    container_name: es-7-node-2
+    depends_on:
+      - es-7-node-1
+    environment:
+      cluster.name: es-7
+      node.name: es-7-node-2
+      discovery.seed_hosts: es-7-node-1
+      cluster.initial_master_nodes: es-7-node-1,es-7-node-2
+      xpack.security.enabled: "false"
+      <<: *sharedenv
+    volumes:
+      - es-7-node-2-data:/usr/share/elasticsearch/data
+    networks:
+      - es-7
+    <<: *sharedconfig7
+
+networks:
+  es-8:
+    name: es-8
+  es-7:
+    name: es-7
+
+volumes:
+  es-8-node-1-data:
+  es-8-node-2-data:
+  es-8-certs:
+  es-7-node-1-data:
+  es-7-node-2-data:
