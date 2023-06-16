@@ -11,6 +11,8 @@ start:
 stop:
 	docker compose down
 
+restart: stop start
+
 nuke:
 	docker compose down -v
 
@@ -31,7 +33,7 @@ bash-8:
 	docker compose exec es-8-node-1 bash
 
 check-8:
-	curl -k "https://elastic:${ELASTIC_PASSWORD}@localhost/es-8"
+	curl -k "https://elastic:${ELASTIC_PASSWORD}@localhost:9508"
 
 # elasticsearch 7
 
@@ -42,4 +44,4 @@ bash-7:
 	docker compose exec es-7-node-1 bash
 
 check-7:
-	curl "http://localhost/es-7"
+	curl "http://localhost:9507"

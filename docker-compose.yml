@@ -25,6 +25,10 @@ x-shared-config7: &sharedconfig7
 x-shared-env: &sharedenv
   ES_JAVA_OPTS: -Xms512m -Xmx512m
   bootstrap.memory_lock: "true"
+  http.cors.enabled: "true"
+  http.cors.allow-origin: /.*/
+  http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
+  path.repo: "/tmp/"
 
 services:
     # elasticsearch 8 ssl setup
@@ -97,6 +101,7 @@ services:
     volumes:
       - es-8-node-1-data:/usr/share/elasticsearch/data
       - es-8-certs:/usr/share/elasticsearch/config/certs
+      - es-8-repo:/tmp/
     ports:
       - 9508:9200
     networks:
@@ -128,6 +133,7 @@ services:
     volumes:
       - es-8-node-2-data:/usr/share/elasticsearch/data
       - es-8-certs:/usr/share/elasticsearch/config/certs
+      - es-8-repo:/tmp/
     networks:
       - es-8
     <<: *sharedconfig8
@@ -145,6 +151,7 @@ services:
       <<: *sharedenv
     volumes:
       - es-7-node-1-data:/usr/share/elasticsearch/data
+      - es-7-repo:/tmp/
     ports:
       - 9507:9200
     networks:
@@ -164,6 +171,7 @@ services:
       <<: *sharedenv
     volumes:
       - es-7-node-2-data:/usr/share/elasticsearch/data
+      - es-7-repo:/tmp/
     networks:
       - es-7
     <<: *sharedconfig7
@@ -177,6 +185,8 @@ networks:
 volumes:
   es-8-node-1-data:
   es-8-node-2-data:
+  es-8-repo:
   es-8-certs:
   es-7-node-1-data:
   es-7-node-2-data:
+  es-7-repo:
