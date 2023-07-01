@@ -202,6 +202,7 @@ services:
     environment:
       cluster.name: es-6
       node.name: es-6-node-2
+      discovery.zen.ping.unicast.hosts: es-6-node-1
       <<: *sharedenv
     volumes:
       - es-6-node-2-data:/usr/share/elasticsearch/data

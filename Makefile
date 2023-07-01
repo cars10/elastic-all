@@ -27,6 +27,9 @@ ps:
 
 check: check-8 check-7 check-6
 
+seed: 
+	./seed.sh
+
 # elasticsearch 8
 
 8:
