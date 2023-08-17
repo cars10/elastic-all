@@ -6,7 +6,7 @@ prepare:
 	docker compose up es-8-setup
 
 start:
-	docker compose up -d es-8-node-1 es-8-node-2 es-7-node-1 es-7-node-2 es-6-node-1 es-6-node-2 minio
+	docker compose up -d es-8-node-1 es-8-node-2 es-7-node-1 es-7-node-2 es-6-node-1 es-6-node-2 es-5-node-1 es-2-node-1 es-1-node-1 minio
 
 stop:
 	docker compose down
@@ -25,7 +25,7 @@ logs:
 ps:
 	docker compose ps
 
-check: check-8 check-7 check-6
+check: check-8 check-7 check-6 check-5 check-2 check-1
 
 seed: 
 	./seed.sh
@@ -62,6 +62,39 @@ bash-6:
 
 check-6:
 	curl "http://localhost:9506"
+
+# elasticsearch 5
+
+5:
+	docker compose up -d es-5-node-1
+
+bash-5:
+	docker compose exec es-5-node-1 bash
+
+check-5:
+	curl "http://localhost:9505"
+
+# elasticsearch 2
+
+2:
+	docker compose up -d es-2-node-1
+
+bash-2:
+	docker compose exec es-2-node-1 bash
+
+check-2:
+	curl "http://localhost:9502"
+
+# elasticsearch 1
+
+1:
+	docker compose up -d es-1-node-1
+
+bash-1:
+	docker compose exec es-1-node-1 bash
+
+check-1:
+	curl "http://localhost:9501"
 
 # minio
 
