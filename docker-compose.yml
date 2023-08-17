@@ -215,13 +215,10 @@ services:
   es-5-node-1:
     image: elasticsearch:${ELASTICSEARCH_5_VERSION}
     container_name: es-5-node-1
-    environment:
-      cluster.name: es-5
-      node.name: es-5-node-1
-      <<: *sharedenv
     volumes:
       - es-5-node-1-data:/usr/share/elasticsearch/data
       - es-5-repo:/tmp/
+      - ./config/5.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9505:9200
     networks:
@@ -232,13 +229,10 @@ services:
   es-2-node-1:
     image: elasticsearch:${ELASTICSEARCH_2_VERSION}
     container_name: es-2-node-1
-    environment:
-      cluster.name: es-2
-      node.name: es-2-node-1
-      <<: *sharedenv
     volumes:
       - es-2-node-1-data:/usr/share/elasticsearch/data
       - es-2-repo:/tmp/
+      - ./config/2.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9502:9200
     networks:
@@ -249,13 +243,10 @@ services:
   es-1-node-1:
     image: elasticsearch:${ELASTICSEARCH_1_VERSION}
     container_name: es-1-node-1
-    environment:
-      cluster.name: es-1
-      node.name: es-1-node-1
-      <<: *sharedenv
     volumes:
       - es-1-node-1-data:/usr/share/elasticsearch/data
       - es-1-repo:/tmp/
+      - ./config/1.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9501:9200
     networks:

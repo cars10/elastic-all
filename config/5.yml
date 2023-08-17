@@ -1,0 +1,7 @@
+cluster.name: es-5
+node.name: es-5-node-1
+network.host: 0.0.0.0
+http.cors.enabled: true
+http.cors.allow-origin: /.*/
+http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
+path.repo: /tmp/
