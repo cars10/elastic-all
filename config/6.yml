@@ -1,0 +1,7 @@
+cluster.name: es-6
+discovery.zen.ping.unicast.hosts: es-6-node-1,es-6-node-2
+network.host: 0.0.0.0
+http.cors.enabled: true
+http.cors.allow-origin: /.*/
+http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
+path.repo: /tmp/

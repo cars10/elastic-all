@@ -34,18 +34,16 @@ You can use the included minio to push s3 snapshots from elasticsearch. E.g. for
 ### Snapshot setup
 
 Node 1
-1. `make bash-8`
-2. `bin/elasticsearch-keystore add s3.client.default.access_key`
-3. Paste the access key
-4. `bin/elasticsearch-keystore add s3.client.default.secret_key`
-5. Paste the secret key
+1. `docker compose exec es-8-node-1 bin/elasticsearch-keystore add s3.client.default.access_key`
+2. Paste the access key
+3. `docker compose exec es-8-node-1 bin/elasticsearch-keystore add s3.client.default.secret_key`
+4. Paste the secret key
 
 Node 2
-1. `docker exec -it es-8-node-2 bash`
-2. `bin/elasticsearch-keystore add s3.client.default.access_key`
-3. Paste the access key
-4. `bin/elasticsearch-keystore add s3.client.default.secret_key`
-5. Paste the secret key
+1. `docker compose exec es-8-node-2 bin/elasticsearch-keystore add s3.client.default.access_key`
+2. Paste the access key
+3. `docker compose exec es-8-node-2 bin/elasticsearch-keystore add s3.client.default.secret_key`
+4. Paste the secret key
 
 
 ### Create repository
@@ -59,7 +57,7 @@ PUT _snapshot/es8
     "bucket": "elastic",
     "endpoint": "minio:9000",
     "path_style_access": "true",
-    "protocol": "http",
+    "protocol": "http"
   }
 }
 ```

@@ -25,10 +25,6 @@ x-shared-config7: &sharedconfig7
 x-shared-env: &sharedenv
   ES_JAVA_OPTS: -Xms512m -Xmx512m
   bootstrap.memory_lock: "true"
-  http.cors.enabled: "true"
-  http.cors.allow-origin: /.*/
-  http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
-  path.repo: "/tmp/"
 
 services:
   # elasticsearch 8 ssl setup
@@ -97,6 +93,10 @@ services:
       xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
       xpack.security.transport.ssl.verification_mode: certificate
       xpack.license.self_generated.type: basic
+      http.cors.enabled: "true"
+      http.cors.allow-origin: /.*/
+      http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
+      path.repo: "/tmp/"
       <<: *sharedenv
     volumes:
       - es-8-node-1-data:/usr/share/elasticsearch/data
@@ -130,6 +130,10 @@ services:
       xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
       xpack.security.transport.ssl.verification_mode: certificate
       xpack.license.self_generated.type: basic
+      http.cors.enabled: "true"
+      http.cors.allow-origin: /.*/
+      http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
+      path.repo: "/tmp/"
       <<: *sharedenv
     volumes:
       - es-8-node-2-data:/usr/share/elasticsearch/data
@@ -145,15 +149,12 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_7_VERSION}
     container_name: es-7-node-1
     environment:
-      cluster.name: es-7
       node.name: es-7-node-1
-      discovery.seed_hosts: es-7-node-2
-      cluster.initial_master_nodes: es-7-node-1,es-7-node-2
-      xpack.security.enabled: "false"
       <<: *sharedenv
     volumes:
       - es-7-node-1-data:/usr/share/elasticsearch/data
       - es-7-repo:/tmp/
+      - ./config/7.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9507:9200
     networks:
@@ -165,15 +166,12 @@ services:
     depends_on:
       - es-7-node-1
     environment:
-      cluster.name: es-7
       node.name: es-7-node-2
-      discovery.seed_hosts: es-7-node-1
-      cluster.initial_master_nodes: es-7-node-1,es-7-node-2
-      xpack.security.enabled: "false"
       <<: *sharedenv
     volumes:
       - es-7-node-2-data:/usr/share/elasticsearch/data
       - es-7-repo:/tmp/
+      - ./config/7.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - es-7
     <<: *sharedconfig7
@@ -183,12 +181,12 @@ services:
     image: elasticsearch:${ELASTICSEARCH_6_VERSION}
     container_name: es-6-node-1
     environment:
-      cluster.name: es-6
       node.name: es-6-node-1
       <<: *sharedenv
     volumes:
       - es-6-node-1-data:/usr/share/elasticsearch/data
       - es-6-repo:/tmp/
+      - ./config/6.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9506:9200
     networks:
@@ -200,13 +198,12 @@ services:
     depends_on:
       - es-6-node-1
     environment:
-      cluster.name: es-6
       node.name: es-6-node-2
-      discovery.zen.ping.unicast.hosts: es-6-node-1
       <<: *sharedenv
     volumes:
       - es-6-node-2-data:/usr/share/elasticsearch/data
       - es-6-repo:/tmp/
+      - ./config/6.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - es-6
     <<: *sharedconfig7
