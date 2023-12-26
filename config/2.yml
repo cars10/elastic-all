@@ -5,3 +5,4 @@ http.cors.enabled: true
 http.cors.allow-origin: /.*/
 http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
 path.repo: /tmp/
+node.attr.datacenter: es2

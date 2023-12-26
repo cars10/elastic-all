@@ -1,9 +1,0 @@
-cluster.name: es-7
-discovery.seed_hosts: es-7-node-1,es-7-node-2
-cluster.initial_master_nodes: es-7-node-1,es-7-node-2
-xpack.security.enabled: "false"
-network.host: 0.0.0.0
-http.cors.enabled: true
-http.cors.allow-origin: /.*/
-http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
-path.repo: /tmp/
