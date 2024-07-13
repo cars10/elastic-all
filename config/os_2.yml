@@ -1,0 +1,8 @@
+cluster.name: os-2
+discovery.seed_hosts: [ os-2-node-1, os-2-node-2 ]
+cluster.initial_cluster_manager_nodes: [ os-2-node-1, os-2-node-2 ]
+network.host: 0.0.0.0
+http.cors.enabled: true
+http.cors.allow-origin: /.*/
+http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
+plugins.security.disabled: true
