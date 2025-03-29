@@ -6,7 +6,7 @@ prepare:
 	docker compose up es-8-setup es-9-setup
 
 start:
-	docker compose up -d es-9-node-1 es-9-node-2 es-8-node-1 es-8-node-2 es-7-node-1 es-7-node-2 es-6-node-1 es-6-node-2 es-5-node-1 es-2-node-1 es-1-node-1
+	docker compose up -d es-9-node-1 es-9-node-2 es-8-node-1 es-8-node-2 es-8-node-3 es-7-node-1 es-7-node-2 es-6-node-1 es-6-node-2 es-5-node-1 es-2-node-1 es-1-node-1
 
 stop:
 	docker compose down
@@ -44,7 +44,7 @@ check-9:
 # elasticsearch 8
 
 8:
-	docker compose up -d es-8-node-1 es-8-node-2
+	docker compose up -d es-8-node-1 es-8-node-2 es-8-node-3
 
 bash-8:
 	docker compose exec es-8-node-1 bash
