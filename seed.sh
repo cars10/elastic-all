@@ -1,5 +1,8 @@
 #!/bin/bash
 
+curl -k -X POST https://elastic:elastic@localhost:9509/_bulk -H 'Content-Type: application/json' --data-binary "@./datasets/omdb-8.json"
+curl -k -X POST https://elastic:elastic@localhost:9509/_bulk -H 'Content-Type: application/json' --data-binary "@./datasets/shakespeare-8.json"
+
 curl -k -X POST https://elastic:elastic@localhost:9508/_bulk -H 'Content-Type: application/json' --data-binary "@./datasets/omdb-8.json"
 curl -k -X POST https://elastic:elastic@localhost:9508/_bulk -H 'Content-Type: application/json' --data-binary "@./datasets/shakespeare-8.json"
 

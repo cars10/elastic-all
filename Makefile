@@ -3,10 +3,10 @@ include .env
 export
 
 prepare:
-	docker compose up es-8-setup
+	docker compose up es-8-setup es-9-setup
 
 start:
-	docker compose up -d es-8-node-1 es-8-node-2 es-7-node-1 es-7-node-2 es-6-node-1 es-6-node-2 es-5-node-1 es-2-node-1 es-1-node-1
+	docker compose up -d es-9-node-1 es-9-node-2 es-8-node-1 es-8-node-2 es-7-node-1 es-7-node-2 es-6-node-1 es-6-node-2 es-5-node-1 es-2-node-1 es-1-node-1
 
 stop:
 	docker compose down
@@ -25,10 +25,21 @@ logs:
 ps:
 	docker compose ps
 
-check: check-8 check-7 check-6 check-5 check-2 check-1
+check: check-9 check-8 check-7 check-6 check-5 check-2 check-1
 
 seed: 
 	./seed.sh
+
+# elasticsearch 9
+
+9:
+	docker compose up -d es-9-node-1 es-9-node-2
+
+bash-9:
+	docker compose exec es-9-node-1 bash
+
+check-9:
+	curl -k "https://elastic:${ELASTIC_PASSWORD}@localhost:9509"
 
 # elasticsearch 8
 
