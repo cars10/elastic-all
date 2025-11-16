@@ -30,6 +30,14 @@ check: check-9 check-8 check-7 check-6 check-5 check-2 check-1
 seed: 
 	./seed.sh
 
+# opensearch
+
+opensearch:
+	docker compose up -d os-2-node-1 os-2-node-2
+
+bash-opensearch:
+	docker compose exec os-2-node-1 bash
+
 # elasticsearch 9
 
 9:
