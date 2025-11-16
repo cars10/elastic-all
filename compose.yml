@@ -417,6 +417,13 @@ services:
     environment:
       node.name: os-2-node-1
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_PASSWORD}
+      # CORS settings
+      http.cors.enabled: true
+      http.cors.allow-origin: /.*/
+      http.cors.allow-headers: "X-Requested-With,Content-Type,Content-Length,Authorization"
+      http.cors.allow-credentials: true
+      http.cors.allow-methods: "OPTIONS,HEAD,GET,POST,PUT,DELETE"
+      http.cors.max-age: 1728000
       <<: *sharedenv
     volumes:
       - os-2-node-1-data:/usr/share/opensearch/data
@@ -432,6 +439,13 @@ services:
     environment:
       node.name: os-2-node-2
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_PASSWORD}
+      # CORS settings
+      http.cors.enabled: true
+      http.cors.allow-origin: /.*/
+      http.cors.allow-headers: "X-Requested-With,Content-Type,Content-Length,Authorization"
+      http.cors.allow-credentials: true
+      http.cors.allow-methods: "OPTIONS,HEAD,GET,POST,PUT,DELETE"
+      http.cors.max-age: 1728000
       <<: *sharedenv
     volumes:
       - os-2-node-2-data:/usr/share/opensearch/data
